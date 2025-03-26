@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Trupix99 - Home</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            margin: 0;
+            background: url("sfondo.jpg") no-repeat center center fixed;
+			background-size: cover;
+            color: #000;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            position: fixed;
+            left: -270px;
+            transition: left 0.3s ease;
+            background: url('sfondo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100%;
+            z-index: 100;
+            box-sizing: border-box;
+			color: #000;
+        }
+        .sidebar.open {
+			color: #000;
+            left: 0;
+        }
+        .close-btn {
+            cursor: pointer;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .menu-btn {
+            cursor: pointer;
+            padding: 10px;
+            font-size: 24px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            box-sizing: border-box;
+            flex-grow: 1;
+        }
+        .card img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .card-info {
+            text-align: center;
+        }
+        .login-dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 200;
+            box-sizing: border-box;
+        }
+        .login-dropdown.open {
+            display: block;
+        }
+        .login-dropdown input {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .login-dropdown button {
+            padding: 10px 20px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <span class="close-btn" onclick="toggleMenu()">✖</span>
+        <h2>Categorie</h2>
+        <ul>
+            <li><a href="javascript:void(0)" onclick="showCategory('felpe')">Felpe</a></li>
+            <li><a href="javascript:void(0)" onclick="showCategory('maglie')">Maglie</a></li>
+            <li><a href="javascript:void(0)" onclick="showCategory('pantaloni')">Pantaloni</a></li>
+            <li><a href="javascript:void(0)" onclick="showCategory('scarpe')">Scarpe</a></li>
+            <li><a href="javascript:void(0)" onclick="showCategory('accessori')">Accessori</a></li>
+        </ul>
+    </div>
+
+    <div>
+        <header>
+            <div class="menu-btn" onclick="toggleMenu()">☰</div>
+            <h1>Trupix99</h1>
+            <nav>
+                <a href="#">Uomo</a>
+                <a href="#">Donna</a>
+                <a href="#">Nuovi Arrivi</a>
+                <a onclick="toggleLogin()">Login</a>
+            </nav>
+            <div class="login-dropdown" id="loginDropdown">
+                <label>Username:</label>
+                <input type="text" placeholder="Inserisci username">
+                <label>Password:</label>
+                <input type="password" placeholder="Inserisci password">
+                <button>Accedi</button>
+            </div>
+        </header>
+
+        <div class="container" id="productContainer"></div>
+    </div>
+
+    <script>
+        const prodotti = [
+            { nome: "Felpa Nera Logo", prezzo: "€59.99", immagine: "felpanera.jpg" , categoria: "felpe"},
+            { nome: "Maglia Bianca Basic", prezzo: "€29.99", immagine: "bianca.jpg" , categoria: "maglie" },
+            { nome: "Felpa Oversize", prezzo: "€69.99", immagine: "felpanera.jpg" , categoria: "felpe"},
+            { nome: "Pantalone Cargo", prezzo: "€34.99", immagine: "pantscargo.jpg" , categoria: "pantaloni" },
+            { nome: "Pantalone Camo", prezzo: "€64.99", immagine: "pantscargo.jpg" , categoria: "pantaloni"},
+            { nome: "Jordan 1 Retro High Travis Scott", prezzo: "€1499.00", immagine: "j1.jpg" , categoria: "scarpe" },
+            { nome: "Felpa Zip Stussy", prezzo: "€159.00", immagine: "zipstussy.jpg" , categoria: "felpe" },
+            { nome: "Pantalone Baggy", prezzo: "€44.99", immagine: "jeansbaggy.jpg" , categoria: "pantaloni" },
+            { nome: "Ray-Ban Wayfarer", prezzo: "€129.00", immagine: "occhiali.jpg" , categoria: "accessori"},
+            { nome: "Occhiali Rosa", prezzo: "€299.00", immagine: "occhialirosa.jpg", categoria: "accessori" },
+			{ nome: "Nike Air Force", prezzo: "€119.00", immagine: "af1.jpg", categoria: "scarpe" },
+			{ nome: "T-Shirt Nude Project", prezzo: "€49.00", immagine: "np.jpg", categoria: "maglie" },
+        ];
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function toggleLogin() {
+            document.getElementById('loginDropdown').classList.toggle('open');
+        }
+
+        function showCategory(categoria) {
+            const container = document.getElementById("productContainer");
+            container.innerHTML = '';
+            const filteredProducts = prodotti.filter(prodotto => prodotto.categoria === categoria);
+
+            filteredProducts.forEach(prodotto => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <img src="${prodotto.immagine}" alt="${prodotto.nome}">
+                    <div class="card-info">
+                        <h3>${prodotto.nome}</h3>
+                        <p>${prodotto.prezzo}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.onload = () => showCategory('felpe');
+    </script>
+
+</body>
+</html>
